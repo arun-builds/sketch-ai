@@ -107,7 +107,7 @@ model Message {
 
 model CanvasState {
   id String @id
-  messageId String
+  messageId String @unique
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   data Json
   createdAt DateTime @default(now())
@@ -118,7 +118,7 @@ model CanvasState {
 
 model CodeState {
   id String @id
-  messageId String
+  messageId String @unique
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   code String
   createdAt DateTime @default(now())

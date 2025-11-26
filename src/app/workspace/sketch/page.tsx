@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Tldraw, useEditor } from "tldraw";
+import { Tldraw,Editor , useEditor } from "tldraw";
 import "tldraw/tldraw.css";
 import {
   Code,
@@ -27,9 +27,50 @@ export default function Page() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedCode, setGeneratedCode] = useState("");
 
+  const [editor, setEditor] = useState<Editor | null>(null);
+
   // This simulates the "Gemini" response
   const handleGenerate = () => {
     setIsGenerating(true);
+
+    if (!editor) return;
+    const snapshot = editor.getSnapshot();
+    console.log("Snapshot:", snapshot);
+
+    const shapes = editor.getCurrentPageShapes();
+
+    console.log("Shapes:", shapes);
+
+    if (shapes.length === 0){
+      toast.error("No shapes found");
+      setIsGenerating(false);
+      return;
+    }
+
+    const imageFromShapes = editor.toImage(shapes,{
+      background: true,
+      format: "png",
+      scale: 2,
+    })
+
+    if (!imageFromShapes){
+      toast.error("Failed to generate image");
+      setIsGenerating(false);
+      return;
+    }
+
+    
+
+    // for testing purposes
+    const downloadImage = async () => {
+      const { blob } = await imageFromShapes;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "sketch.png";
+      link.click();
+    }
+    downloadImage();
+
 
     // Simulate API delay
     setTimeout(() => {
@@ -155,8 +196,8 @@ export default function Page() {
                 : "opacity-0 pointer-events-none z-0"
             }`}
           >
-            <Tldraw persistenceKey="my-tldraw-app">
-              <CanvasListener />
+            <Tldraw persistenceKey="my-tldraw-app" onMount={(editor) => setEditor(editor)}>
+              {/* <CanvasListener /> */}
             </Tldraw>
           </div>
 
@@ -215,28 +256,28 @@ export default function Page() {
 }
 
 // Hook to listen to Tldraw state (from your original snippet)
-function CanvasListener() {
-  const editor = useEditor();
+// function CanvasListener() {
+//   const editor = useEditor();
 
-  useEffect(() => {
-    if (!editor) return;
+//   useEffect(() => {
+//     if (!editor) return;
 
-    // Optional: Log initial state
-    const snapshot = editor.getSnapshot();
-    console.log("Initial Snapshot:", snapshot);
+//     // Optional: Log initial state
+//     const snapshot = editor.getSnapshot();
+//     console.log("Initial Snapshot:", snapshot);
 
-    // Listen to changes
-    const unsub = editor.store.listen(
-      (update) => {
-        // This is where you would technically send data to Gemini
-        // For now, we are just listening
-        console.log("Canvas updated", update);
-      },
-      { source: "user", scope: "document" }
-    );
+//     // Listen to changes
+//     const unsub = editor.store.listen(
+//       (update) => {
+//         // This is where you would technically send data to Gemini
+//         // For now, we are just listening
+//         console.log("Canvas updated", update);
+//       },
+//       { source: "user", scope: "document" }
+//     );
 
-    return () => unsub();
-  }, [editor]);
+//     return () => unsub();
+//   }, [editor]);
 
-  return null;
-}
+//   return null;
+// }
