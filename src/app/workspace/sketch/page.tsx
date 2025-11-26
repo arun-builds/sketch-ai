@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { toast } from "sonner";
+import { blobToBase64 } from "@/lib/blobToBase64";
 
 // --- Mock Sidebar Component (Inline for portability) ---
 
@@ -30,7 +31,7 @@ export default function Page() {
   const [editor, setEditor] = useState<Editor | null>(null);
 
   // This simulates the "Gemini" response
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
 
     if (!editor) return;
@@ -47,7 +48,7 @@ export default function Page() {
       return;
     }
 
-    const imageFromShapes = editor.toImage(shapes,{
+    const imageFromShapes = await editor.toImage(shapes,{
       background: true,
       format: "png",
       scale: 2,
@@ -59,55 +60,62 @@ export default function Page() {
       return;
     }
 
+    const base64Image = await blobToBase64(imageFromShapes.blob);
+ 
+    
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          body: JSON.stringify({ base64Image }),
+        });
+        const data = await response.json();
+        setGeneratedCode(data.code);
+        console.log("Response:", data.code);
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error("Failed to generate website");
+        setIsGenerating(false);
+        return;
+      }
     
 
-    // for testing purposes
-    const downloadImage = async () => {
-      const { blob } = await imageFromShapes;
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "sketch.png";
-      link.click();
-    }
-    downloadImage();
 
 
     // Simulate API delay
-    setTimeout(() => {
-      const mockGeneratedCode = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Site</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center font-sans">
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-indigo-100">
-        <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-        </div>
-        <h1 class="text-3xl font-bold text-gray-800 mb-3">It Works!</h1>
-        <p class="text-gray-500 mb-8 leading-relaxed">
-            This is a website generated from your whiteboard sketch using the Gemini API simulation.
-        </p>
-        <div class="flex gap-3 justify-center">
-            <button class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-200">
-                Get Started
-            </button>
-            <button class="px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-medium rounded-lg hover:bg-indigo-50 transition-colors">
-                Learn More
-            </button>
-        </div>
-    </div>
-</body>
-</html>`;
-      setGeneratedCode(mockGeneratedCode);
-      setIsGenerating(false);
-      setActiveTab("preview"); // Auto switch to preview
-    }, 2000);
+//     setTimeout(() => {
+//       const mockGeneratedCode = `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>Generated Site</title>
+//     <script src="https://cdn.tailwindcss.com"></script>
+// </head>
+// <body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center font-sans">
+//     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-indigo-100">
+//         <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
+//             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+//             </svg>
+//         </div>
+//         <h1 class="text-3xl font-bold text-gray-800 mb-3">It Works!</h1>
+//         <p class="text-gray-500 mb-8 leading-relaxed">
+//             This is a website generated from your whiteboard sketch using the Gemini API simulation.
+//         </p>
+//         <div class="flex gap-3 justify-center">
+//             <button class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-200">
+//                 Get Started
+//             </button>
+//             <button class="px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-medium rounded-lg hover:bg-indigo-50 transition-colors">
+//                 Learn More
+//             </button>
+//         </div>
+//     </div>
+// </body>
+// </html>`;
+      
+    setIsGenerating(false);
+    setActiveTab("preview"); // Auto switch to preview
   };
 
   return (
