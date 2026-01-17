@@ -1,13 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Instagram, Youtube, Facebook, X, AtSign, Rss } from "lucide-react"; // Using Rss for TikTok icon as it's not directly in Lucide
-import Image from "next/image"; // For the TikTok icon, if you use a custom SVG/PNG
+import { 
+  Lightbulb, 
+  Rocket, 
+  Users, 
+  Palette, 
+  Code2, 
+  Layers 
+} from "lucide-react";
+import Link from "next/link";
 
-// Helper component for the platform icons, which have a specific style
-function PlatformIcon({ children }: { children: React.ReactNode }) {
+// Helper component for the use case icons
+function UseCaseIcon({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#1E162E] border border-[#372F46] shadow-md shadow-purple-900/10 mb-4">
+    <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-600/20 border border-purple-500/30 shadow-md shadow-purple-900/10 mb-4">
       {children}
     </div>
   );
@@ -15,7 +22,7 @@ function PlatformIcon({ children }: { children: React.ReactNode }) {
 
 export function SocialToolsSection() {
   return (
-    <section className="relative py-24 px-4  overflow-hidden">
+    <section id="use-cases" className="relative py-24 px-4 overflow-hidden">
       
       {/* Subtle background glow from the top-right */}
       <div className="absolute -right-[10%] top-[10%] w-[600px] h-[600px] rounded-full bg-indigo-700/10 blur-[150px] opacity-60 pointer-events-none" />
@@ -25,95 +32,94 @@ export function SocialToolsSection() {
         {/* 1. Section Header */}
         <div className="text-center mb-20">
           <div className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-6">
-            <span className="text-sm text-gray-300">— Social Tools —</span>
+            <span className="text-sm text-gray-300">— Use Cases —</span>
           </div>
           
           <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Powerful tool for <br />
-            boosting social media <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-purple-500 to-indigo-500">growth</span>
+            Perfect for every <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-purple-500 to-indigo-500">creative workflow</span>
           </h2>
           
           <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-8">
-            Produce unlimited short videos simultaneously with automatic generation <br />
-            of captions, effects, backgrounds, and music.
+            Whether you&apos;re a designer, developer, or entrepreneur, <br />
+            Sketch AI accelerates your idea-to-code journey.
           </p>
 
           {/* Call to Action Button */}
-          <Button className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] transition-all hover:scale-105">
-            Try now &gt;
-          </Button>
+          <Link href="/workspace/sketch">
+            <Button className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] transition-all hover:scale-105">
+              Start Creating &gt;
+            </Button>
+          </Link>
         </div>
 
 
-        {/* 2. Platform Features Grid (3x2) */}
+        {/* 2. Use Cases Grid (3x2) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {/* --- Instagram Reels --- */}
+          {/* --- Rapid Prototyping --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              <Instagram size={30} className="text-purple-400" />
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">Instagram Reels</h3>
+            <UseCaseIcon>
+              <Rocket size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">Rapid Prototyping</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Transform Instagram Reels into engaging content by adding gameplay to captivate viewers.
+              Quickly validate your ideas by sketching UI concepts and getting working prototypes in seconds.
             </p>
           </div>
 
-          {/* --- TikTok Videos --- */}
+          {/* --- Design Handoff --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              {/* Using a custom image for TikTok icon as Lucide doesn't have it directly */}
-              {/* You'll need to save a TikTok icon as public/tiktok.svg or public/tiktok.png */}
-              <Image src="/images/tiktok.svg" alt="TikTok" width={30} height={30} className="text-purple-400" />
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">TikTok Videos</h3>
+            <UseCaseIcon>
+              <Layers size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">Design Handoff</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Elevate your TikTok videos by adding gameplay to create captivating and entertaining content.
+              Bridge the gap between design and development. Sketch your ideas and share the generated code.
             </p>
           </div>
 
-          {/* --- YouTube Shorts --- */}
+          {/* --- Learning & Teaching --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              <Youtube size={30} className="text-purple-400" />
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">YouTube Shorts</h3>
+            <UseCaseIcon>
+              <Lightbulb size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">Learning & Teaching</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Enhance your YouTube Shorts by adding gameplay to create dynamic and engaging content.
+              Great for students and educators. See how UI concepts translate to real HTML and CSS code.
             </p>
           </div>
 
-          {/* --- Facebook Reels --- */}
+          {/* --- Client Presentations --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              <Facebook size={30} className="text-purple-400" />
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">Facebook Reels</h3>
+            <UseCaseIcon>
+              <Users size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">Client Presentations</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Transform Facebook Reels into engaging content by adding gameplay to captivate viewers.
+              Impress clients by quickly turning their ideas into visual, working prototypes during meetings.
             </p>
           </div>
 
-          {/* --- Twitter (X) videos --- */}
+          {/* --- UI Exploration --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              <X size={30} className="text-purple-400" />
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">Twitter (X) videos</h3>
+            <UseCaseIcon>
+              <Palette size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">UI Exploration</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Enhance your X videos by incorporating gameplay to grab attention and keep viewers hooked.
+              Experiment with different layouts and designs freely. Iterate quickly without writing code.
             </p>
           </div>
 
-          {/* --- Thread Videos (Using AtSign for now) --- */}
+          {/* --- Developer Productivity --- */}
           <div className="bg-[#0F081E] border border-[#2B213C] rounded-2xl p-6 shadow-lg shadow-purple-900/5 flex flex-col items-start">
-            <PlatformIcon>
-              {/* Lucide doesn't have a direct "Threads" icon, using AtSign for now */}
-              <AtSign size={30} className="text-purple-400" /> 
-            </PlatformIcon>
-            <h3 className="text-white font-semibold text-xl mb-2">Thread Videos</h3>
+            <UseCaseIcon>
+              <Code2 size={28} className="text-purple-400" />
+            </UseCaseIcon>
+            <h3 className="text-white font-semibold text-xl mb-2">Developer Productivity</h3>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Boost your Thread videos with gameplay! Engaging visuals captivate viewers and enhance your content.
+              Skip the boilerplate. Get a head start on your frontend code and focus on the logic.
             </p>
           </div>
 
