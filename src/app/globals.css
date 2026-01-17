@@ -114,10 +114,52 @@
 }
 
 @layer base {
-  * {
+  *:not(.tl-container *):not(.tl-container) {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Ensure tldraw has proper z-index and styling isolation */
+.tl-container {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Fix tldraw canvas visibility in production */
+.tl-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+}
+
+/* Ensure tldraw UI elements are visible */
+.tl-ui {
+  z-index: 100 !important;
+}
+
+.tl-overlays {
+  z-index: 100 !important;
+}
+
+/* Fix selection handles visibility */
+.tl-selection__fg,
+.tl-selection__bg {
+  pointer-events: auto !important;
+}
+
+/* Ensure shapes remain visible when selected */
+.tl-shape {
+  pointer-events: auto !important;
+}
+
+/* Fix for tldraw editor wrapper */
+.tldraw-editor {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
 }

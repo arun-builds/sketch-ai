@@ -203,10 +203,13 @@ export default function Page() {
                 ? "opacity-100 z-10"
                 : "opacity-0 pointer-events-none z-0"
             }`}
+            style={{ position: 'absolute', inset: 0 }}
           >
-            <Tldraw persistenceKey="my-tldraw-app" onMount={(editor) => setEditor(editor)}>
-              {/* <CanvasListener /> */}
-            </Tldraw>
+            <Tldraw 
+              persistenceKey="my-tldraw-app" 
+              onMount={(editor) => setEditor(editor)}
+              className="tldraw-editor"
+            />
           </div>
 
           {/* 2. Preview Mode */}
