@@ -1,27 +1,19 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Tldraw,Editor , useEditor } from "tldraw";
-import "tldraw/tldraw.css";
+import React, { useState } from "react";
+import { Tldraw, type Editor } from "@tldraw/tldraw";
+import "@tldraw/tldraw/tldraw.css";
 import {
   Code,
   Eye,
   PenTool,
   Sparkles,
-  Layout,
-  Settings,
-  Home,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
 } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { toast } from "sonner";
 import { blobToBase64 } from "@/lib/blobToBase64";
 
-// --- Mock Sidebar Component (Inline for portability) ---
-
-// --- Main Page Component ---
 export default function Page() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("canvas"); // 'canvas' | 'preview' | 'code'
@@ -30,92 +22,72 @@ export default function Page() {
 
   const [editor, setEditor] = useState<Editor | null>(null);
 
-  // This simulates the "Gemini" response
   const handleGenerate = async () => {
     setIsGenerating(true);
 
-    if (!editor) return;
-    const snapshot = editor.getSnapshot();
-    console.log("Snapshot:", snapshot);
+    if (!editor) {
+      setIsGenerating(false);
+      return;
+    }
 
-    const shapes = editor.getCurrentPageShapes();
+    const shapeIds = editor.getCurrentPageShapeIds();
 
-    console.log("Shapes:", shapes);
-
-    if (shapes.length === 0){
+    if (shapeIds.size === 0) {
       toast.error("No shapes found");
       setIsGenerating(false);
       return;
     }
 
-    const imageFromShapes = await editor.toImage(shapes,{
-      background: true,
-      format: "png",
-      scale: 2,
-    })
+    try {
+      // Export the canvas as SVG and convert to blob
+      const svg = await editor.getSvg([...shapeIds], {
+        background: true,
+        padding: 20,
+      });
 
-    if (!imageFromShapes){
-      toast.error("Failed to generate image");
-      setIsGenerating(false);
-      return;
-    }
-
-    const base64Image = await blobToBase64(imageFromShapes.blob);
- 
-    
-      try {
-        const response = await fetch("/api/generate", {
-          method: "POST",
-          body: JSON.stringify({ base64Image }),
-        });
-        const data = await response.json();
-        setGeneratedCode(data.code);
-        console.log("Response:", data.code);
-      } catch (error) {
-        console.error("Error:", error);
-        toast.error("Failed to generate website");
+      if (!svg) {
+        toast.error("Failed to generate image");
         setIsGenerating(false);
         return;
       }
-    
 
+      // Convert SVG to PNG using canvas
+      const svgString = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
 
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        img.onload = () => {
+          canvas.width = img.width * 2;
+          canvas.height = img.height * 2;
+          ctx?.scale(2, 2);
+          ctx?.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("Failed to create blob"));
+          }, "image/png");
+        };
+        img.onerror = reject;
+        img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString)));
+      });
 
-    // Simulate API delay
-//     setTimeout(() => {
-//       const mockGeneratedCode = `<!DOCTYPE html>
-// <html lang="en">
-// <head>
-//     <meta charset="UTF-8">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <title>Generated Site</title>
-//     <script src="https://cdn.tailwindcss.com"></script>
-// </head>
-// <body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center font-sans">
-//     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-indigo-100">
-//         <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
-//             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-//             </svg>
-//         </div>
-//         <h1 class="text-3xl font-bold text-gray-800 mb-3">It Works!</h1>
-//         <p class="text-gray-500 mb-8 leading-relaxed">
-//             This is a website generated from your whiteboard sketch using the Gemini API simulation.
-//         </p>
-//         <div class="flex gap-3 justify-center">
-//             <button class="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-200">
-//                 Get Started
-//             </button>
-//             <button class="px-6 py-2.5 bg-white text-indigo-600 border border-indigo-200 font-medium rounded-lg hover:bg-indigo-50 transition-colors">
-//                 Learn More
-//             </button>
-//         </div>
-//     </div>
-// </body>
-// </html>`;
-      
-    setIsGenerating(false);
-    setActiveTab("preview"); // Auto switch to preview
+      const base64Image = await blobToBase64(blob);
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        body: JSON.stringify({ base64Image }),
+      });
+      const data = await response.json();
+      setGeneratedCode(data.code);
+      console.log("Response:", data.code);
+      setActiveTab("preview");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to generate website");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -203,13 +175,10 @@ export default function Page() {
                 ? "opacity-100 z-10"
                 : "opacity-0 pointer-events-none z-0"
             }`}
-            style={{ position: 'absolute', inset: 0 }}
           >
-            <Tldraw 
-              persistenceKey="my-tldraw-app" 
+            <Tldraw
+              persistenceKey="sketch-ai-canvas"
               onMount={(editor) => setEditor(editor)}
-              className="tldraw-editor"
-              licenseKey={process.env.NEXT_PUBLIC_TLDRAW_LICENSE_KEY}
             />
           </div>
 
@@ -246,7 +215,7 @@ export default function Page() {
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(generatedCode);
-                      toast.success("Copies to clipboard");
+                      toast.success("Copied to clipboard");
                     }}
                     className="text-xs text-gray-400 hover:text-white transition-colors"
                   >
@@ -266,30 +235,3 @@ export default function Page() {
     </div>
   );
 }
-
-// Hook to listen to Tldraw state (from your original snippet)
-// function CanvasListener() {
-//   const editor = useEditor();
-
-//   useEffect(() => {
-//     if (!editor) return;
-
-//     // Optional: Log initial state
-//     const snapshot = editor.getSnapshot();
-//     console.log("Initial Snapshot:", snapshot);
-
-//     // Listen to changes
-//     const unsub = editor.store.listen(
-//       (update) => {
-//         // This is where you would technically send data to Gemini
-//         // For now, we are just listening
-//         console.log("Canvas updated", update);
-//       },
-//       { source: "user", scope: "document" }
-//     );
-
-//     return () => unsub();
-//   }, [editor]);
-
-//   return null;
-// }
