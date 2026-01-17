@@ -209,6 +209,7 @@ export default function Page() {
               persistenceKey="my-tldraw-app" 
               onMount={(editor) => setEditor(editor)}
               className="tldraw-editor"
+              licenseKey={process.env.NEXT_PUBLIC_TLDRAW_LICENSE_KEY}
             />
           </div>
 
