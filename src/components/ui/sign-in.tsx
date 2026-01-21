@@ -18,22 +18,23 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
 
   return (
-    <Card className="max-w-md">
-      <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          Enter your email below to login to your account
+    <Card className="max-w-md border-purple-500/20 bg-white/5 backdrop-blur-sm shadow-xl text-white">
+      <CardHeader className="space-y-1 pb-4">
+        <CardTitle className="text-2xl font-semibold text-white">Sign In</CardTitle>
+        <CardDescription className="text-sm text-gray-300">
+          Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="grid gap-4">
           <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-gray-200">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="you@example.com"
                 required
+                className="bg-white/5 border-gray-700 focus:border-purple-500/50 text-white placeholder:text-gray-500"
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
@@ -42,21 +43,22 @@ export default function SignIn() {
             </div>
 
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-200">Password</Label>
                 <Link
                     href="#"
-                    className="ml-auto inline-block text-sm underline"
+                    className="text-xs text-purple-400 hover:text-purple-300 underline-offset-4 transition-colors"
                   >
-                    Forgot your password?
+                    Forgot password?
                   </Link>
               </div>
 
               <Input
                 id="password"
                 type="password"
-                placeholder="password"
+                placeholder="Enter your password"
                 autoComplete="password"
+                className="bg-white/5 border-gray-700 focus:border-purple-500/50 text-white placeholder:text-gray-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -69,14 +71,12 @@ export default function SignIn() {
                     setRememberMe(!rememberMe);
                   }}
                 />
-                <Label htmlFor="remember">Remember me</Label>
+                <Label htmlFor="remember" className="text-sm text-gray-300 cursor-pointer">Remember me</Label>
               </div>
-
-          
 
           <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium"
               disabled={loading}
               onClick={async () => {
                 await signIn.email(
@@ -96,23 +96,34 @@ export default function SignIn() {
               }}
             >
               {loading ? (
-                <Loader2 size={16} className="animate-spin" />
+                <>
+                  <Loader2 size={16} className="animate-spin mr-2" />
+                  Signing in...
+                </>
               ) : (
-                <p> Login </p>
+                "Sign In"
               )}
               </Button>
 
-          
+          {/* Divider */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-700"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-[#030014] px-2 text-gray-400">Or continue with</span>
+            </div>
+          </div>
 
           <div className={cn(
-              "w-full gap-2 flex items-center",
+              "w-full gap-3 flex items-center",
               "justify-between flex-col"
             )}>
               
 				<Button
                   variant="outline"
                   className={cn(
-                    "w-full gap-2"
+                    "w-full gap-2 border-gray-700 bg-white/5 hover:bg-white/10 hover:border-gray-600 text-white"
                   )}
                   disabled={loading}
                   onClick={async () => {
@@ -143,7 +154,7 @@ export default function SignIn() {
 				<Button
                   variant="outline"
                   className={cn(
-                    "w-full gap-2"
+                    "w-full gap-2 border-gray-700 bg-white/5 hover:bg-white/10 hover:border-gray-600 text-white"
                   )}
                   disabled={loading}
                   onClick={async () => {
@@ -179,18 +190,16 @@ export default function SignIn() {
             </div>
         </div>
       </CardContent>
-      <CardFooter>
-          <div className="flex justify-center w-full border-t py-4">
-            <p className="text-center text-xs text-neutral-500">
-             built with{" "}
+      <CardFooter className="pt-4">
+          <div className="flex justify-center w-full border-t border-gray-800 pt-4">
+            <p className="text-center text-xs text-gray-400">
+             Secured by{" "}
               <Link
                 href="https://better-auth.com"
-                className="underline"
+                className="text-purple-400 hover:text-purple-300 underline underline-offset-4 transition-colors"
                 target="_blank"
               >
-                <span className="dark:text-white/70 cursor-pointer">
-									better-auth.
-								</span>
+                better-auth
               </Link>
             </p>
           </div>
