@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server"
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const hasSession = request.cookies.has("better-auth.session_token")
+  const hasSession = request.cookies.has("__Secure-better-auth.session_token")
 
   // 1️⃣ Auth routes: logged-in users shouldn't see login/signup
   if (pathname.startsWith("/auth")) {
