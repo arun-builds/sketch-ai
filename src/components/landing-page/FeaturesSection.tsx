@@ -40,7 +40,7 @@ export function FeaturesSection() {
           </p>
 
           <div className="flex gap-4">
-            <Link href="/workspace/sketch">
+            <Link href="/auth">
               <Button className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] transition-all hover:scale-105">
                 Try now &gt;
               </Button>

@@ -39,7 +39,7 @@ export function Navbar() {
       </div>
 
       {/* Right Side: CTA */}
-      <Link href="/workspace/sketch">
+      <Link href="/auth">
         <Button className="rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 border border-white/20 text-white px-6">
           Start Sketching <ChevronRight className="w-4 h-4 ml-1" />
         </Button>

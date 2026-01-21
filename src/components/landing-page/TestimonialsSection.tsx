@@ -102,7 +102,7 @@ export function TestimonialsSection() {
                 </p>
 
                 <div className="flex gap-4">
-                    <Link href="/workspace/sketch">
+                    <Link href="/auth">
                       <Button className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-[#8A2BE2] to-[#4B0082] hover:opacity-90 text-white shadow-[0_0_20px_rgba(138,43,226,0.4)] transition-all hover:scale-105">
                           Open Canvas &gt;
                       </Button>

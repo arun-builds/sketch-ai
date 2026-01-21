@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { headers } from "next/headers";
+
+import {auth} from "@/lib/auth";
+
+
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
@@ -10,6 +15,8 @@ if (!apiKey) {
 const genai = new GoogleGenAI({
   apiKey: apiKey,
 });
+
+
 
 const prompt = `You are a highly skilled **Senior Web Developer** specializing in modern, responsive, and semantic web design.
 
@@ -31,6 +38,15 @@ Generate production-ready **HTML and CSS code** from the provided Base64 image s
 Only return the complete, valid **HTML code block** containing the embedded CSS.`;
 
 export async function POST(req: Request) {
+
+    const session = await auth.api.getSession({
+        headers: await headers() // you need to pass the headers object.
+    })
+    
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
     try {
         const { base64Image } = await req.json();
         // console.log("Base64 Image from API:", base64Image);d
