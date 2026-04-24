@@ -71,7 +71,7 @@ export default function Page() {
 
   return (
     <div className="flex w-screen h-screen bg-gray-50 overflow-hidden font-sans">
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      {/* <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} /> */}
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full relative">
