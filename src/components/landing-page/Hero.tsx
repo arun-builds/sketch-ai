@@ -32,24 +32,26 @@ export function Hero() {
 
       {/* 4. Primary CTA */}
       <div className="flex flex-col sm:flex-row gap-4 items-center">
-        <Link href="/auth">
-          <Button 
-            size="lg" 
-            className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] transition-all hover:scale-105"
-          >
-            <PenTool className="w-5 h-5 mr-2" />
-            Start Sketching <ChevronRight className="w-5 h-5 ml-2" />
-          </Button>
-        </Link>
-        <Link href="#how-it-works">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="h-12 px-8 text-lg rounded-full border-gray-600 text-gray-300 hover:text-white hover:border-white/50 bg-transparent backdrop-blur-sm"
-          >
-            See How It Works
-          </Button>
-        </Link>
+        <Button
+          asChild
+          size="lg"
+          className="h-12 px-8 text-lg rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.5)] transition-all hover:scale-105"
+        >
+          <Link href="/workspace/sketch">
+            <span className="inline-flex items-center">
+              <PenTool className="w-5 h-5 mr-2" />
+              Start Sketching <ChevronRight className="w-5 h-5 ml-2" />
+            </span>
+          </Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="h-12 px-8 text-lg rounded-full border-gray-600 text-gray-300 hover:text-white hover:border-white/50 bg-transparent backdrop-blur-sm"
+        >
+          <Link href="#how-it-works">See How It Works</Link>
+        </Button>
       </div>
 
     </section>
